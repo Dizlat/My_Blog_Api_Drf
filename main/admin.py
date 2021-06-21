@@ -13,4 +13,5 @@ class PostImageInLine(admin.TabularInline):
 class PostAdmin(admin.ModelAdmin):
     inlines = [PostImageInLine,]
 
+
 admin.site.register(Category)
