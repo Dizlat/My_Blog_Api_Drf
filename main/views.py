@@ -54,3 +54,10 @@ class PostDeleteView(generics.DestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+
+class PostImageView(generics.ListAPIView):
+    queryset = PostImage.objects.all()
+    serializer_class = PostImageSerializer
+
+    def get_serializer_context(self):
+        return {'request': self.request}
