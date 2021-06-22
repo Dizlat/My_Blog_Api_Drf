@@ -16,11 +16,20 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from blog_api import settings
+
+from main.views import CategoryListView, PostsViewSet
+
+
+router = DefaultRouter()
+router.register('posts', PostsViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('v1/api/', include('main.urls')),
+    path('v1/api/categories', CategoryListView.as_view()),
+    path('v1/api/', include(router.urls)),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
