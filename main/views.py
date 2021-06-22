@@ -22,7 +22,7 @@ class PostListView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        post = request.data.get('post')
+        post = request.data
         serializer = PostSerializer(data=post)
         if serializer.is_valid(raise_exception=True):
             post_saved = serializer.save()
