@@ -10,9 +10,15 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format='%d/%m/%y %H:%M:%S', read_only=True)
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = ('id', 'title', 'category', 'author', 'created_at', 'text')
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['images'] = PostImageSerializer(instance.images.all(), many=True, context=self.context).data
+        return representation
 
 
 class PostImageSerializer(serializers.ModelSerializer):
