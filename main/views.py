@@ -71,7 +71,7 @@ class PostsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class PostImageView(generics.ListAPIView):
+class PostImageView(generics.ListCreateAPIView):
     queryset = PostImage.objects.all()
     serializer_class = PostImageSerializer
 
