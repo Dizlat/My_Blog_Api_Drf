@@ -2,7 +2,7 @@ from  rest_framework import serializers
 
 from account.models import MyUser
 
-#TODO: regiser serializer
+from account.utils import send_activation_code
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -20,5 +20,12 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Password do not match')
         return validated_data
 
+    def create(self, validated_data):
+        """This function is called when self.save() method is called"""
+        email = validated_data.get('email')
+        password = validated_data.get('password')
+        user = MyUser.objects.create_user(email=email, password=password)
+        send_activation_code(email=user.email, activation_code=user.activation_code)
+        return user
 
 #TODO: login serializer
