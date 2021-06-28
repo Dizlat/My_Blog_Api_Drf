@@ -1,13 +1,14 @@
 from django.db.models import Q
 from django.shortcuts import render
 from rest_framework.decorators import api_view, action
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics, viewsets, status
 
 from main.models import *
 from main.serializers import *
-
+from .permissions import *
 
 # @api_view(['GET'])
 # def categories(request):
@@ -54,11 +55,20 @@ from main.serializers import *
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [AllowAny, ]
 
 
 class PostsViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, ]
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'destroy']:
+            permissions = [IsPostAuthor, ]
+        else:
+            permissions = [IsAuthenticated, ]
+        return [permission() for permission in permissions]
 
     @action(detail=False, methods=['get'])
     def search(self, request, pk=None):
