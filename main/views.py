@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.utils import timezone
 from rest_framework.decorators import api_view, action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -55,6 +56,15 @@ from .permissions import *
 #     serializer_class = PostSerializer
 
 
+class MyPaginationClass(PageNumberPagination):
+    page_size = 3
+
+    def get_paginated_response(self, data):
+        for i in range(self.page_size):
+            text = data[i]['text']
+            data[i]['text'] = text[:15] + '...'
+        return super().get_paginated_response(data)
+
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -65,6 +75,7 @@ class PostsViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, ]
+    pagination_class = MyPaginationClass
 
     def get_serializer_context(self):
         return {'request': self.request}
