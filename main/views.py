@@ -63,6 +63,9 @@ class PostsViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, ]
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy']:
             permissions = [IsPostAuthor, ]
